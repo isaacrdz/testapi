@@ -1,10 +1,6 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-
-import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
-import TextFieldGroup from "../common/TextFieldGroup";
+import axios from "axios";
+import classnames from "classnames";
 
 class Register extends Component {
   constructor() {
@@ -17,27 +13,13 @@ class Register extends Component {
       password2: "",
       errors: {}
     };
-
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  componentWillMount() {
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({ errors: nextProps.errors });
-    }
   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
-
   onSubmit(e) {
     e.preventDefault();
 
@@ -47,78 +29,246 @@ class Register extends Component {
       password: this.state.password,
       password2: this.state.password2
     };
-    this.props.registerUser(newUser, this.props.history);
+    axios
+      .post("/api/users/register", newUser)
+      .then(res => console.log(res.data))
+      .catch(err => console.log(err.response.data));
   }
+
   render() {
     const { errors } = this.state;
     return (
-      <div className="register">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-8 m-auto">
-              <h1 className="display-4 text-center">Sign Up</h1>
-              <p className="lead text-center">
-                Create your DevConnector account
-              </p>
-              <form noValidate onSubmit={this.onSubmit}>
-                <TextFieldGroup
-                  placeholder="Name"
-                  name="name"
-                  value={this.state.name}
-                  onChange={this.onChange}
-                  error={errors.name}
-                />
+      <main>
+        <section className="section section-shaped section-lg my-0">
+          <div className="shape shape-style-1 bg-gradient-default">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="container pt-lg-md">
+            <div className="row justify-content-center">
+              <div className="col-lg-5">
+                <div className="card bg-secondary shadow border-0">
+                  <div className="card-header bg-white pb-5">
+                    <div className="text-muted text-center mb-3">
+                      <small>Sign up with</small>
+                    </div>
+                    <div className="text-center">
+                      <a href="" className="btn btn-neutral btn-icon mr-4">
+                        <span className="btn-inner--icon">
+                          <i className="fab fa-github" />
+                        </span>
+                        <span className="btn-inner--text">Github</span>
+                      </a>
+                      <a href="" className="btn btn-neutral btn-icon">
+                        <span className="btn-inner--icon">
+                          <i className="fab fa-google" />
+                        </span>
+                        <span className="btn-inner--text">Google</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="card-body px-lg-5 py-lg-5">
+                    <div className="text-center text-muted mb-4">
+                      <small>Or sign up with credentials</small>
+                    </div>
+                    <form noValidate onSubmit={this.onSubmit}>
+                      <div
+                        className={classnames("form-group", {
+                          "has-danger": errors.name
+                        })}
+                      >
+                        <div className="input-group input-group-alternative mb-3">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text">
+                              <i className="fas fa-user" />
+                            </span>
+                          </div>
+                          <input
+                            className={classnames("form-control", {
+                              "is-valid": errors.name
+                            })}
+                            placeholder="Name"
+                            type="text"
+                            name="name"
+                            value={this.state.name}
+                            onChange={this.onChange}
+                          />
+                        </div>
+                        {errors.name && (
+                          <div
+                            className="alert alert-danger alert-dismissible fade show"
+                            role="alert"
+                          >
+                            <span className="alert-inner--icon">
+                              <i className="ni ni-support-16" />
+                            </span>
+                            <span className="alert-inner--text">
+                              <strong>Danger! </strong>
+                              {errors.name}
+                            </span>
+                            <button
+                              type="button"
+                              className="close"
+                              data-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                <TextFieldGroup
-                  placeholder="Email Address"
-                  name="email"
-                  type="email"
-                  value={this.state.email}
-                  onChange={this.onChange}
-                  error={errors.email}
-                  info="This site users a Gravatar so if you want a profile image, use a gravatar email "
-                />
+                      <div
+                        className={classnames("form-group", {
+                          "has-danger": errors.email
+                        })}
+                      >
+                        <div className="input-group input-group-alternative mb-3">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text">
+                              <i className="fas fa-envelope" />
+                            </span>
+                          </div>
+                          <input
+                            className={classnames("form-control", {
+                              "is-invalid": errors.email
+                            })}
+                            placeholder="Email"
+                            name="email"
+                            type="email"
+                            value={this.state.email}
+                            onChange={this.onChange}
+                          />
+                        </div>
+                        {errors.email && (
+                          <div
+                            className="alert alert-danger alert-dismissible fade show"
+                            role="alert"
+                          >
+                            <span className="alert-inner--icon">
+                              <i className="ni ni-support-16" />
+                            </span>
+                            <span className="alert-inner--text">
+                              <strong>Danger! </strong>
+                              {errors.email}
+                            </span>
+                            <button
+                              type="button"
+                              className="close"
+                              data-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                <TextFieldGroup
-                  placeholder="Password"
-                  name="password"
-                  type="password"
-                  value={this.state.password}
-                  onChange={this.onChange}
-                  error={errors.password}
-                />
+                      <div
+                        className={classnames("form-group", {
+                          "has-danger": errors.password
+                        })}
+                      >
+                        <div className="input-group input-group-alternative">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text">
+                              <i className="fas fa-key" />
+                            </span>
+                          </div>
+                          <input
+                            className={classnames("form-control", {
+                              "has-danger": errors.password
+                            })}
+                            placeholder="Password"
+                            type="password"
+                            name="password"
+                            value={this.state.password}
+                            onChange={this.onChange}
+                          />
+                        </div>
+                        {errors.password && (
+                          <div
+                            className="alert alert-danger alert-dismissible fade show"
+                            role="alert"
+                          >
+                            <span className="alert-inner--icon">
+                              <i className="ni ni-support-16" />
+                            </span>
+                            <span className="alert-inner--text">
+                              <strong>Danger! </strong>
+                              {errors.password}
+                            </span>
+                            <button
+                              type="button"
+                              className="close"
+                              data-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                <TextFieldGroup
-                  placeholder="Confirm Password"
-                  name="password2"
-                  type="password"
-                  value={this.state.password2}
-                  onChange={this.onChange}
-                  error={errors.password2}
-                />
+                      <div
+                        className={classnames("form-group", {
+                          "has-danger": errors.password2
+                        })}
+                      >
+                        <div className="input-group input-group-alternative">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text">
+                              <i className="fas fa-key" />
+                            </span>
+                          </div>
+                          <input
+                            className={classnames("form-control", {
+                              "is-invalid": errors.password2
+                            })}
+                            placeholder="Confirm Password"
+                            type="password"
+                            name="password2"
+                            value={this.state.password2}
+                            onChange={this.onChange}
+                          />
+                        </div>
+                        {errors.password2 && (
+                          <div
+                            className="alert alert-danger alert-dismissible fade show"
+                            role="alert"
+                          >
+                            <span className="alert-inner--icon">
+                              <i className="ni ni-support-16" />
+                            </span>
+                            <span className="alert-inner--text">
+                              <strong>Danger! </strong>
+                              {errors.password2}
+                            </span>
+                            <button
+                              type="button"
+                              className="close"
+                              data-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                <input type="submit" className="btn btn-info btn-block mt-4" />
-              </form>
+                      <div className="text-center">
+                        <button type="submit" className="btn btn-primary mt-4">
+                          Create account
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     );
   }
 }
 
-Register.PropTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
-
-export default connect(
-  mapStateToProps,
-  { registerUser }
-)(withRouter(Register));
+export default Register;
