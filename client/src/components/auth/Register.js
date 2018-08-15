@@ -32,7 +32,7 @@ class Register extends Component {
     axios
       .post("/api/users/register", newUser)
       .then(res => console.log(res.data))
-      .catch(err => console.log(err.response.data));
+      .catch(err => this.setState({ errors: err.response.data }));
   }
 
   render() {
@@ -91,7 +91,7 @@ class Register extends Component {
                           </div>
                           <input
                             className={classnames("form-control", {
-                              "is-valid": errors.name
+                              "is-invalid": errors.name
                             })}
                             placeholder="Name"
                             type="text"
@@ -100,24 +100,10 @@ class Register extends Component {
                             onChange={this.onChange}
                           />
                         </div>
+
                         {errors.name && (
-                          <div
-                            className="alert alert-danger alert-dismissible fade show"
-                            role="alert"
-                          >
-                            <span className="alert-inner--icon">
-                              <i className="ni ni-support-16" />
-                            </span>
-                            <span className="alert-inner--text">
-                              <strong>Danger! </strong>
-                              {errors.name}
-                            </span>
-                            <button
-                              type="button"
-                              className="close"
-                              data-dismiss="alert"
-                              aria-label="Close"
-                            />
+                          <div className="alert alert-danger" role="alert">
+                            {errors.name}
                           </div>
                         )}
                       </div>
