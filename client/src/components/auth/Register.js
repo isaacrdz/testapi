@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
+import { withRouter } from "react-router-dom";
+
 import classnames from "classnames";
 
 class Register extends Component {
@@ -17,6 +21,18 @@ class Register extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
+
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -29,10 +45,8 @@ class Register extends Component {
       password: this.state.password,
       password2: this.state.password2
     };
-    axios
-      .post("/api/users/register", newUser)
-      .then(res => console.log(res.data))
-      .catch(err => this.setState({ errors: err.response.data }));
+
+    this.props.registerUser(newUser, this.props.history);
   }
 
   render() {
@@ -89,6 +103,7 @@ class Register extends Component {
                               <i className="fas fa-user" />
                             </span>
                           </div>
+
                           <input
                             className={classnames("form-control", {
                               "is-invalid": errors.name
@@ -100,7 +115,6 @@ class Register extends Component {
                             onChange={this.onChange}
                           />
                         </div>
-
                         {errors.name && (
                           <div className="alert alert-danger" role="alert">
                             {errors.name}
@@ -257,4 +271,18 @@ class Register extends Component {
   }
 }
 
-export default Register;
+Register.PropTypes = {
+  auth: PropTypes.object.isRequired,
+  registerUser: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Register));

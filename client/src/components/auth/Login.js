@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { loginUser } from "../../actions/authActions";
+import classnames from "classnames";
+
 class Login extends Component {
   constructor() {
     super();
@@ -12,7 +17,21 @@ class Login extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -20,14 +39,17 @@ class Login extends Component {
   onSubmit(e) {
     e.preventDefault();
 
-    const user = {
+    const userData = {
       email: this.state.email,
       password: this.state.password
     };
-    console.log(user);
+
+    this.props.loginUser(userData);
   }
 
   render() {
+    const { errors } = this.state;
+
     return (
       <main>
         <section className="section section-shaped section-lg my-0">
@@ -69,24 +91,54 @@ class Login extends Component {
                       <small>Or sign in with credentials</small>
                     </div>
                     <form onSubmit={this.onSubmit}>
-                      <div className="form-group mb-3">
-                        <div className="input-group input-group-alternative">
+                      <div
+                        className={classnames("form-group", {
+                          "has-danger": errors.email
+                        })}
+                      >
+                        <div className="input-group input-group-alternative mb-3">
                           <div className="input-group-prepend">
                             <span className="input-group-text">
                               <i className="fas fa-envelope" />
                             </span>
                           </div>
                           <input
-                            className="form-control"
+                            className={classnames("form-control", {
+                              "is-invalid": errors.email
+                            })}
                             placeholder="Email"
-                            type="email"
                             name="email"
+                            type="email"
                             value={this.state.email}
                             onChange={this.onChange}
                           />
                         </div>
+                        {errors.email && (
+                          <div
+                            className="alert alert-danger alert-dismissible fade show"
+                            role="alert"
+                          >
+                            <span className="alert-inner--icon">
+                              <i className="ni ni-support-16" />
+                            </span>
+                            <span className="alert-inner--text">
+                              <strong>Danger! </strong>
+                              {errors.email}
+                            </span>
+                            <button
+                              type="button"
+                              className="close"
+                              data-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        )}
                       </div>
-                      <div className="form-group">
+                      <div
+                        className={classnames("form-group", {
+                          "has-danger": errors.password
+                        })}
+                      >
                         <div className="input-group input-group-alternative">
                           <div className="input-group-prepend">
                             <span className="input-group-text">
@@ -94,7 +146,9 @@ class Login extends Component {
                             </span>
                           </div>
                           <input
-                            className="form-control"
+                            className={classnames("form-control", {
+                              "has-danger": errors.password
+                            })}
                             placeholder="Password"
                             type="password"
                             name="password"
@@ -102,6 +156,26 @@ class Login extends Component {
                             onChange={this.onChange}
                           />
                         </div>
+                        {errors.password && (
+                          <div
+                            className="alert alert-danger alert-dismissible fade show"
+                            role="alert"
+                          >
+                            <span className="alert-inner--icon">
+                              <i className="ni ni-support-16" />
+                            </span>
+                            <span className="alert-inner--text">
+                              <strong>Danger! </strong>
+                              {errors.password}
+                            </span>
+                            <button
+                              type="button"
+                              className="close"
+                              data-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        )}
                       </div>
 
                       <div className="text-center">
@@ -133,4 +207,17 @@ class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+export default connect(
+  mapStateToProps,
+  { loginUser }
+)(Login);
