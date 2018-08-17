@@ -2,14 +2,16 @@ import React from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const InputGroup = ({
+const TextFieldGroup = ({
   name,
   placeholder,
   value,
+  label,
   error,
-  icon,
+  info,
   type,
-  onChange
+  onChange,
+  disabled
 }) => {
   return (
     <div
@@ -46,17 +48,19 @@ const InputGroup = ({
   );
 };
 
-InputGroup.propTypes = {
+TextFieldGroup.propTypes = {
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
-  icon: PropTypes.string,
+  info: PropTypes.string,
   error: PropTypes.string,
   type: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  disabled: PropTypes.string
 };
 
-InputGroup.defaultProps = {
+TextFieldGroup.defaultProps = {
   type: "text"
 };
-export default InputGroup;
+
+export default TextFieldGroup;

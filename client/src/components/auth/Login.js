@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
-import classnames from "classnames";
+import TextFieldGroup from "../common/TextFieldGroup";
 
 class Login extends Component {
   constructor() {
@@ -91,92 +91,23 @@ class Login extends Component {
                       <small>Or sign in with credentials</small>
                     </div>
                     <form onSubmit={this.onSubmit}>
-                      <div
-                        className={classnames("form-group", {
-                          "has-danger": errors.email
-                        })}
-                      >
-                        <div className="input-group input-group-alternative mb-3">
-                          <div className="input-group-prepend">
-                            <span className="input-group-text">
-                              <i className="fas fa-envelope" />
-                            </span>
-                          </div>
-                          <input
-                            className={classnames("form-control", {
-                              "is-invalid": errors.email
-                            })}
-                            placeholder="Email"
-                            name="email"
-                            type="email"
-                            value={this.state.email}
-                            onChange={this.onChange}
-                          />
-                        </div>
-                        {errors.email && (
-                          <div
-                            className="alert alert-danger alert-dismissible fade show"
-                            role="alert"
-                          >
-                            <span className="alert-inner--icon">
-                              <i className="ni ni-support-16" />
-                            </span>
-                            <span className="alert-inner--text">
-                              <strong>Danger! </strong>
-                              {errors.email}
-                            </span>
-                            <button
-                              type="button"
-                              className="close"
-                              data-dismiss="alert"
-                              aria-label="Close"
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div
-                        className={classnames("form-group", {
-                          "has-danger": errors.password
-                        })}
-                      >
-                        <div className="input-group input-group-alternative">
-                          <div className="input-group-prepend">
-                            <span className="input-group-text">
-                              <i className="fas fa-key" />
-                            </span>
-                          </div>
-                          <input
-                            className={classnames("form-control", {
-                              "has-danger": errors.password
-                            })}
-                            placeholder="Password"
-                            type="password"
-                            name="password"
-                            value={this.state.password}
-                            onChange={this.onChange}
-                          />
-                        </div>
-                        {errors.password && (
-                          <div
-                            className="alert alert-danger alert-dismissible fade show"
-                            role="alert"
-                          >
-                            <span className="alert-inner--icon">
-                              <i className="ni ni-support-16" />
-                            </span>
-                            <span className="alert-inner--text">
-                              <strong>Danger! </strong>
-                              {errors.password}
-                            </span>
-                            <button
-                              type="button"
-                              className="close"
-                              data-dismiss="alert"
-                              aria-label="Close"
-                            />
-                          </div>
-                        )}
-                      </div>
+                      <TextFieldGroup
+                        placeholder="Email"
+                        name="email"
+                        type="email"
+                        value={this.state.email}
+                        onChange={this.onChange}
+                        error={errors.email}
+                      />
+
+                      <TextFieldGroup
+                        placeholder="Password"
+                        type="password"
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.onChange}
+                        error={errors.password}
+                      />
 
                       <div className="text-center">
                         <button type="submit" className="btn btn-primary my-4">
